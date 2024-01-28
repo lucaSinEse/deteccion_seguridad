@@ -1,4 +1,35 @@
 {% extends 'layouts/base.html' %}
 {% block content %}
-<p>Security</p>
+    <h1>Detección de objetos</h1>
+
+    <video id="video-stream" autoplay></video>
+    <button id="start-button">Iniciar</button>
+    <button id="stop-button" disabled>Detener</button>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            var video = document.getElementById('video-stream');
+            var startButton = document.getElementById('start-button');
+            var stopButton = document.getElementById('stop-button');
+
+            startButton.onclick = function() {
+                video.style.display = 'block';
+                startButton.disabled = true;
+                stopButton.disabled = false;
+
+                $.post('security/', {'action': 'start'}, function(response) {
+                    video.src = 'data:image/jpeg;base64,' + response.image;
+                });
+            };
+
+            stopButton.onclick = function() {
+                video.style.display = 'none';
+                startButton.disabled = false;
+                stopButton.disabled = true;
+
+                $.post('/security/', {'action': 'stop'});
+            };
+        });
+    </script>
 {% endblock %}
